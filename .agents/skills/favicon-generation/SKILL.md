@@ -25,4 +25,4 @@ Create a recognizable favicon set for the current site, integrate its links, and
 
 ## Current Quail visual direction
 
-The user requested the strong, simple silhouette associated with GitHub's favicon and YouTube's saturated red rounded tile. Use those as broad visual cues: an original white quail silhouette on a red tile, with minimal interior detail. Do not reproduce the Octocat or YouTube play-button marks.
+Use an original white quail silhouette on a saturated blue tile (`#4392F1`), with minimal interior detail. The mark must stay recognizable at 16x16: keep a rounded body, head, beak, and tail, and remove sharp feet/wing details. Do not reproduce the Octocat or YouTube play-button marks. The eye is a blue cutout in the white head.

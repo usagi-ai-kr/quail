@@ -12,36 +12,28 @@ from pathlib import Path
 
 CANVAS = 512
 AA = 4
-TILE = (255, 0, 51, 255)
+TILE = (67, 146, 241, 255)
 WHITE = (255, 255, 255, 255)
-ACCENT = (176, 10, 43, 255)
 
-# Each primitive is shared by the SVG source and the PNG renderer.
-TAIL = [(116, 251), (185, 263), (162, 215), (238, 254), (232, 336), (204, 365), (161, 350), (184, 316)]
-BODY = (260, 310, 132, 98)
-HEAD = (331, 195, 76, 78)
-BEAK = [(390, 174), (482, 201), (390, 227)]
-WING = [(218, 286), (302, 279), (276, 309), (224, 320)]
-EYE = (353, 178, 10)
-FEET = [
-    [(268, 384), (283, 384), (282, 408), (302, 416), (299, 424), (266, 417)],
-    [(328, 384), (342, 384), (342, 408), (361, 416), (358, 424), (326, 417)],
-]
+# Simplified quail silhouette: rounded body, head, beak, and tail only.
+# Feet and wing details are intentionally removed for 16px legibility.
+TAIL = [(150, 255), (210, 235), (185, 205), (255, 235), (245, 315), (210, 345), (175, 330), (195, 295)]
+BODY = (275, 312, 138, 102)
+HEAD = (345, 198, 78, 80)
+BEAK = [(405, 178), (492, 205), (405, 232)]
+EYE = (365, 182, 11)
 
 
 def svg_source() -> str:
     points = lambda values: " ".join(f"{x},{y}" for x, y in values)
-    feet = "\n  ".join(f'<polygon points="{points(poly)}" fill="#ffffff" />' for poly in FEET)
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {CANVAS} {CANVAS}" role="img" aria-labelledby="title">
   <title id="title">Quail</title>
-  <rect width="{CANVAS}" height="{CANVAS}" rx="126" fill="#ff0033" />
-  {feet}
+  <rect width="{CANVAS}" height="{CANVAS}" rx="126" fill="#4392f1" />
   <polygon points="{points(TAIL)}" fill="#ffffff" />
   <ellipse cx="{BODY[0]}" cy="{BODY[1]}" rx="{BODY[2]}" ry="{BODY[3]}" fill="#ffffff" />
-  <polygon points="{points(WING)}" fill="#b00a2b" />
   <ellipse cx="{HEAD[0]}" cy="{HEAD[1]}" rx="{HEAD[2]}" ry="{HEAD[3]}" fill="#ffffff" />
   <polygon points="{points(BEAK)}" fill="#ffffff" />
-  <circle cx="{EYE[0]}" cy="{EYE[1]}" r="{EYE[2]}" fill="#b00a2b" />
+  <circle cx="{EYE[0]}" cy="{EYE[1]}" r="{EYE[2]}" fill="#4392f1" />
 </svg>
 '''
 
@@ -120,14 +112,11 @@ class Raster:
             self.span(py, left, right, color)
 
     def draw_mark(self) -> None:
-        for poly in FEET:
-            self.polygon(poly, WHITE)
         self.polygon(TAIL, WHITE)
         self.ellipse(*BODY, WHITE)
-        self.polygon(WING, ACCENT)
         self.ellipse(*HEAD, WHITE)
         self.polygon(BEAK, WHITE)
-        self.ellipse(EYE[0], EYE[1], EYE[2], EYE[2], ACCENT)
+        self.ellipse(EYE[0], EYE[1], EYE[2], EYE[2], TILE)
 
     def png(self) -> bytes:
         self.draw_mark()
@@ -204,8 +193,8 @@ def generate(output_dir: Path) -> list[Path]:
             {"src": "/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
             {"src": "/web-app-manifest-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
         ],
-        "background_color": "#ff0033",
-        "theme_color": "#ff0033",
+        "background_color": "#4392f1",
+        "theme_color": "#4392f1",
     }
     write("site.webmanifest", json.dumps(manifest, indent=2) + "\n")
     return outputs

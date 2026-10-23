@@ -1,6 +1,6 @@
 # 0006. Generate Quail favicon assets locally
 
-- Status: Accepted
+- Status: Superseded by [0009](./0009-adopt-quail-blue-palette-and-simplified-favicon.md)
 - Date: 2026-10-24
 
 ## Context
