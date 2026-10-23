@@ -16,7 +16,7 @@ export default defineConfig({
     }),
   ],
   test: {
-    include: ["tests/**/*.test.ts"],
+    include: ["tests/{client,domain,server}/**/*.test.ts"],
     fileParallelism: false,
   },
 });

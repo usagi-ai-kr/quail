@@ -39,6 +39,16 @@ python3 -m unittest discover -s .agents/skills/layered-auth-development/tests -v
 
 The checker validates local TypeScript/JavaScript imports in src. It counts value imports, type-only imports, re-exports, dynamic imports, and CommonJS requires. It excludes test/spec files and test directories from production dependency checks. It checks relative imports only; path aliases, computed imports, and external framework/package dependencies are outside its scope. Typecheck, build, and source review must cover those boundaries separately.
 
+## Solid UI foundation
+
+- Use Tailwind CSS 4.3.3 for layout and styling and Kobalte 0.13.14 for accessible interaction primitives; @tailwindcss/vite is 4.3.3. Keep external UI component imports in src/ui/** only.
+- Treat .agents/skills/color-palette/assets/palette.css as the single source of palette tokens. Tailwind semantic utilities map to those tokens; do not create a second editable palette.
+- Follow docs/design-system.md for Button variants, default focus, errors, disabled controls, autofill, password masking, Pretendard, and responsive screen behavior.
+- Keep Korean element names and text keys aligned with docs/ui-glossary.md and src/ui/content/ko.ts. Do not repeat copy literals across components or add an i18n dependency for the current Korean copy set.
+- Apply word-break: keep-all to Korean prose and overflow-wrap: break-word to long unspaced content. Pretendard is the local UI font; system-ui is allowed only for password masking glyphs when it improves legibility.
+- Write Given/When/Then UI cases for accessible labels, keyboard/focus, pending/disabled behavior, errors, and status announcements. Keep .test.tsx cases in the UI test configuration, separate from the Worker regression suite; report jsdom and real-browser evidence separately.
+- For future data-heavy screens, use desktop side navigation and semantic tables, with compact navigation and record cards on mobile. Do not describe future dashboard, Select, Dialog, MoneyField, or DataTable components as implemented before they exist.
+
 ## Password authentication contract
 
 - Hono 4.13.13 owns the Worker API. Use PASETO v4.local sessions with paseto-ts 2.0.7. Use ky 2.2.0 for browser requests. Declare compatible stable ranges and commit the lockfile.

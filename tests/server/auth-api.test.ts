@@ -187,9 +187,15 @@ describe("password authentication API", () => {
 
   it("Given a public login asset and a protected direct asset, When unauthenticated paths are requested, Then only the login allowlist is served", async () => {
     const loginAsset = await app.request("https://quail.test/assets/login.js", {}, bindings());
+    const publicFont = await app.request("https://quail.test/fonts/PretendardVariable.woff2", {}, bindings());
+    const fontLicense = await app.request("https://quail.test/fonts/Pretendard-OFL.txt", {}, bindings());
     const unknownBundle = await app.request("https://quail.test/assets/other-chunk.js", {}, bindings());
     const protectedAsset = await app.request("https://quail.test/private/report.json", {}, bindings());
     expect(loginAsset.status).toBe(200);
+    expect(publicFont.status).toBe(200);
+    expect(await publicFont.text()).toBe("asset:/fonts/PretendardVariable.woff2");
+    expect(fontLicense.status).toBe(200);
+    expect(await fontLicense.text()).toBe("asset:/fonts/Pretendard-OFL.txt");
     expect(unknownBundle.status).toBe(401);
     expect(protectedAsset.status).toBe(401);
   });

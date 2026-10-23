@@ -23,6 +23,7 @@ const PUBLIC_LOGIN_PATHS = new Set([
   "/favicon.svg", "/favicon-96x96.png", "/favicon.ico", "/apple-touch-icon.png",
   "/site.webmanifest", "/web-app-manifest-192x192.png", "/web-app-manifest-512x512.png",
   "/fonts/NIXGONL-Vb.woff", "/fonts/NIXGONM-Vb.woff", "/fonts/NIXGONB-Vb.woff",
+  "/fonts/PretendardVariable.woff2", "/fonts/Pretendard-OFL.txt",
 ]);
 const MAX_LOGIN_BODY_BYTES = 1024;
 

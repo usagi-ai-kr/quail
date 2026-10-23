@@ -1,7 +1,8 @@
 # 0004. Nixgon Font 로컬 임베딩
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-10-23
+- Superseded by: [ADR-0013](0013-adopt-pretendard-for-ui-font.md)
 
 ## Context
 

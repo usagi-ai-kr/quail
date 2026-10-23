@@ -1,6 +1,6 @@
 ---
 name: color-palette
-description: "Apply the Quail color palette (#4392F1, #ECE8EF, #E3EBFF, #E7F0FF, #DC493A) as semantic CSS tokens, check WCAG contrast, and generate favicon assets on a blue tile. Use when designing or reviewing UI colors, tokens, spacing, or favicon branding."
+description: "Apply the Quail color palette (#4392F1, #ECE8EF, #E3EBFF, #E7F0FF, #DC493A) as semantic CSS tokens, check WCAG contrast, and generate favicon assets on a blue tile. Use when designing or reviewing UI colors, Tailwind tokens, Korean typography, spacing, or favicon branding."
 ---
 
 # Color Palette
@@ -32,6 +32,13 @@ Keep layouts simple and whitespace-led:
 - Prefer one primary action per view and generous vertical rhythm.
 - Use `--radius-md` or `--radius-lg`; avoid mixing many radii.
 - Do not add decorative gradients or extra accent colors outside the five-color palette.
+
+## UI and Korean copy conventions
+
+- Tailwind utilities must map to the generated semantic palette; do not maintain a second editable set of color values.
+- Quail UI uses local Pretendard and word-break: keep-all for Korean prose, with overflow-wrap: break-word for long unspaced content. system-ui is permitted only for password masking glyph legibility.
+- Use the central uiCopy keys in src/ui/content/ko.ts and keep element names and Korean terms aligned with docs/ui-glossary.md. Do not duplicate copy keys or literals or add an i18n dependency for the current Korean UI.
+- Apply the same palette and Korean text rules to future data screens: desktop side navigation and tables, mobile navigation and record cards. These are future layout rules, not claims that those screens exist.
 
 ## Generate tokens
 
