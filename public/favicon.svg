@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Quail</title>
+  <rect width="512" height="512" rx="126" fill="#ff0033" />
+  <polygon points="268,384 283,384 282,408 302,416 299,424 266,417" fill="#ffffff" />
+  <polygon points="328,384 342,384 342,408 361,416 358,424 326,417" fill="#ffffff" />
+  <polygon points="116,251 185,263 162,215 238,254 232,336 204,365 161,350 184,316" fill="#ffffff" />
+  <ellipse cx="260" cy="310" rx="132" ry="98" fill="#ffffff" />
+  <polygon points="218,286 302,279 276,309 224,320" fill="#b00a2b" />
+  <ellipse cx="331" cy="195" rx="76" ry="78" fill="#ffffff" />
+  <polygon points="390,174 482,201 390,227" fill="#ffffff" />
+  <circle cx="353" cy="178" r="10" fill="#b00a2b" />
+</svg>
