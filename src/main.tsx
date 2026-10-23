@@ -1,19 +1,12 @@
 import { render } from "solid-js/web";
+import { createAuthClient } from "./infra/client/auth-api";
+import LoginPage from "./ui/LoginPage";
 import "./style.css";
 
-function App() {
-  return (
-    <main>
-      <p class="eyebrow">SOLIDJS + CLOUDFLARE WORKERS</p>
-      <h1>Hello, world!</h1>
-      <p>SolidJS 앱이 Cloudflare Workers에서 실행 중입니다.</p>
-    </main>
-  );
-}
+document.title = "메추라기 비가 내린다";
+const authClient = createAuthClient();
 
 const root = document.getElementById("root");
-if (!root) {
-  throw new Error("Missing #root element");
-}
+if (!root) throw new Error("Missing #root element");
 
-render(() => <App />, root);
+render(() => <LoginPage client={authClient} />, root);

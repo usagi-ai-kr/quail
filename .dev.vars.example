@@ -1,0 +1,5 @@
+# Copy to .dev.vars for local development and replace both values.
+# PASSWORD is only read by the Worker. Do not put it in client-side code.
+PASSWORD=replace-with-a-long-random-password
+# Generate a fresh k4.local PASERK key for each environment; never reuse this placeholder.
+PASETO_KEY=k4.local.REPLACE_WITH_43_BASE64URL_CHARACTERS

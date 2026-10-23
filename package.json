@@ -1,23 +1,29 @@
 {
   "name": "solidjs-workers-hello",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
     "typecheck": "tsc --noEmit",
     "build": "pnpm typecheck && vite build",
     "preview": "pnpm build && vite preview",
-    "deploy": "pnpm build && wrangler deploy"
+    "deploy": "pnpm build && wrangler deploy",
+    "test": "vitest run --config vitest.config.ts"
   },
   "dependencies": {
-    "solid-js": "^1.9.17"
+    "solid-js": "^1.9.17",
+    "hono": "^4.13.13",
+    "ky": "^2.2.0",
+    "paseto-ts": "^2.0.7"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.64.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vite-plugin-solid": "^2.11.14",
-    "wrangler": "^4.151.3"
+    "wrangler": "^4.151.3",
+    "@cloudflare/vitest-plugin": "^1.4.7",
+    "vitest": "^4.1.0"
   }
 }

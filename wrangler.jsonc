@@ -1,7 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "quail-solid-hello",
-  "compatibility_date": "2026-10-23",
+  "main": "./src/infra/server/worker.ts",
+  "compatibility_date": "2026-10-19",
   "workers_dev": true,
   "routes": [
     {
@@ -9,7 +10,23 @@
       "custom_domain": true
     }
   ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "AUTH_RATE_LIMITER",
+        "class_name": "AuthRateLimitDurableObject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["AuthRateLimitDurableObject"]
+    }
+  ],
   "assets": {
+    "binding": "ASSETS",
+    "run_worker_first": true,
     "not_found_handling": "single-page-application"
   }
 }
