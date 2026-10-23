@@ -2,6 +2,7 @@
   "name": "solidjs-workers-hello",
   "private": true,
   "version": "0.1.0",
+  "packageManager": "pnpm@11.24.0",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -9,7 +10,8 @@
     "build": "pnpm typecheck && vite build",
     "preview": "pnpm build && vite preview",
     "deploy": "pnpm build && wrangler deploy",
-    "test": "vitest run --config vitest.config.ts"
+    "test": "vitest run --config vitest.config.ts",
+    "deploy:verify": "node scripts/deploy-verify.mjs"
   },
   "dependencies": {
     "solid-js": "^1.9.17",

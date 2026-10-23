@@ -34,17 +34,11 @@ The browser client must not retry login automatically. Configure ky with retry: 
 Run these commands from the project root. Wrangler prompts for each value; do not append values to commands or put them in shell history.
 
 ~~~sh
-pnpm wrangler secret put PASSWORD
-pnpm wrangler secret put PASETO_KEY
+pnpm exec wrangler secret put PASSWORD
+node scripts/set-paseto-key.mjs
 ~~~
 
-PASSWORD is the shared login password. PASETO_KEY must be a PASERK string in the exact `k4.local.<43-base64url-characters>` format (52 characters total), as required by paseto-ts 2.0.7; do not provide raw 32-byte key material. Generate a key with the package's synchronous `generateKeys("local")` API (Node 19+):
-
-~~~sh
-node --input-type=module -e 'import { generateKeys } from "paseto-ts/v4"; console.log(generateKeys("local"));'
-~~~
-
-Copy the generated value into the secret prompt without putting it in command history. Do not derive it from PASSWORD. Keep values out of source, wrangler.jsonc vars, browser assets, client storage, logs, and test output.
+The first command prompts for the shared PASSWORD; do not append the value to the command. The second command generates a PASERK `k4.local.<43-base64url-characters>` key and registers it as `PASETO_KEY` on Worker `quail-solid-hello` through Wrangler stdin. It does not print the generated key. Each run rotates the key and invalidates existing sessions. Do not derive the key from PASSWORD. Keep both values out of source, wrangler.jsonc vars, browser assets, client storage, logs, and test output.
 
 For local development, create .dev.vars beside the Wrangler configuration and replace these placeholders with local-only values:
 
@@ -53,7 +47,7 @@ PASSWORD=<local-only-password>
 PASETO_KEY=k4.local.<43-base64url-characters>
 ~~~
 
-Replace the PASETO_KEY placeholder with a freshly generated PASERK key; the angle-bracket text above is not a valid key. Use local values that differ from production. The repository ignores .dev.vars files; confirm with git check-ignore .dev.vars and never commit the file. Wrangler uses .dev.vars for local secrets; do not use both .dev.vars and .env for the same local environment.
+Replace the PASETO_KEY placeholder with a local-only PASERK key; the angle-bracket text above is not a valid key. The provisioning script above targets the Cloudflare Worker and does not create or print a local key. Use local values that differ from production. The repository ignores .dev.vars files; confirm with git check-ignore .dev.vars and never commit the file. Wrangler uses .dev.vars for local secrets; do not use both .dev.vars and .env for the same local environment.
 
 Missing PASSWORD or PASETO_KEY must fail closed with 503 before limiter state changes. Never silently fall back to a default or an empty value.
 
