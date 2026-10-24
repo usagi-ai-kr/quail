@@ -1,19 +1,26 @@
 #!/usr/bin/env python3
-"""Generate Quail's RealFaviconGenerator-aligned assets without third-party packages."""
+"""Generate Quail's favicon assets. Packaging requires Pillow; the legacy vector path uses only the standard library."""
 
 from __future__ import annotations
 
 import argparse
+import base64
+import io
 import json
 import math
 import struct
 import zlib
 from pathlib import Path
+from typing import Callable
 
 CANVAS = 512
 AA = 4
 TILE = (67, 146, 241, 255)
 WHITE = (255, 255, 255, 255)
+DEFAULT_SELECTED_SOURCE = (
+    Path(__file__).resolve().parents[1]
+    / "assets" / "nanobanana2" / "concept-01-normalized.png"
+)
 
 # Simplified quail silhouette: rounded body, head, beak, and tail only.
 # Feet and wing details are intentionally removed for 16px legibility.
@@ -170,7 +177,96 @@ def render(size: int, *, background: str, mark_scale: float = 1.0) -> bytes:
     return Raster(size, background, mark_scale).png()
 
 
-def generate(output_dir: Path) -> list[Path]:
+def write_manifest(write: Callable[[str, bytes | str], None]) -> None:
+    manifest = {
+        "name": "Quail",
+        "short_name": "Quail",
+        "icons": [
+            {"src": "/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+            {"src": "/web-app-manifest-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+        ],
+        "background_color": "#4392f1",
+        "theme_color": "#4392f1",
+    }
+    write("site.webmanifest", json.dumps(manifest, indent=2) + "\n")
+
+
+def generate_from_png(source_png: Path, output_dir: Path) -> list[Path]:
+    """Deterministically derive the public favicon set from a saved PNG source."""
+    try:
+        from PIL import Image
+    except ImportError as error:
+        raise RuntimeError(
+            "PNG-based packaging requires Pillow; install scripts/requirements.txt"
+        ) from error
+
+    with Image.open(source_png) as opened:
+        if opened.format != "PNG":
+            raise ValueError("source favicon must be a PNG image")
+        if opened.width != opened.height:
+            raise ValueError("source favicon must be square")
+        opened.load()
+        source = opened.convert("RGBA")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    outputs: list[Path] = []
+
+    def write(name: str, data: bytes | str) -> None:
+        path = output_dir / name
+        path.write_bytes(data.encode("utf-8") if isinstance(data, str) else data)
+        outputs.append(path)
+
+    # Small browser icons use a central 80% crop scaled by 1.25x so the mark
+    # stays identifiable at 16px. Maskable and Apple icons keep full-source
+    # safe-area padding and are not optically enlarged.
+    def optical_image(size: int):
+        crop_size = int(round(min(source.size) * 0.8))
+        left = (source.width - crop_size) // 2
+        top = (source.height - crop_size) // 2
+        return source.crop((left, top, left + crop_size, top + crop_size)).resize(
+            (size, size), Image.Resampling.LANCZOS
+        )
+
+    sizes = {
+        "favicon-96x96.png": ("optical", 96),
+        "apple-touch-icon.png": ("full", 180),
+        "web-app-manifest-192x192.png": ("full", 192),
+        "web-app-manifest-512x512.png": ("full", 512),
+    }
+    for name, (mode, size) in sizes.items():
+        image = optical_image(size) if mode == "optical" else source.resize((size, size), Image.Resampling.LANCZOS)
+        path = output_dir / name
+        image.save(path, format="PNG", optimize=False, compress_level=9)
+        outputs.append(path)
+
+    ico_path = output_dir / "favicon.ico"
+    optical_image(48).save(
+        ico_path,
+        format="ICO",
+        sizes=[(16, 16), (32, 32), (48, 48)],
+    )
+    outputs.append(ico_path)
+
+    optical_512 = optical_image(512)
+    svg_buffer = io.BytesIO()
+    optical_512.save(svg_buffer, format="PNG", optimize=False, compress_level=9)
+    embedded = base64.b64encode(svg_buffer.getvalue()).decode("ascii")
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Quail</title>
+  <image width="512" height="512" href="data:image/png;base64,{embedded}" />
+</svg>
+'''
+    write("favicon.svg", svg)
+    write_manifest(write)
+    return outputs
+
+
+def generate(output_dir: Path, source_png: Path | None = DEFAULT_SELECTED_SOURCE) -> list[Path]:
+    if source_png is not None:
+        if not source_png.is_file():
+            raise FileNotFoundError(f"selected AI source PNG is missing: {source_png}")
+        return generate_from_png(source_png, output_dir)
+
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs: list[Path] = []
 
@@ -186,25 +282,26 @@ def generate(output_dir: Path) -> list[Path]:
     write("web-app-manifest-512x512.png", render(512, background="square", mark_scale=0.78))
     write("favicon.ico", ico([(size, render(size, background="tile")) for size in (16, 32, 48)]))
 
-    manifest = {
-        "name": "Quail",
-        "short_name": "Quail",
-        "icons": [
-            {"src": "/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-            {"src": "/web-app-manifest-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
-        ],
-        "background_color": "#4392f1",
-        "theme_color": "#4392f1",
-    }
-    write("site.webmanifest", json.dumps(manifest, indent=2) + "\n")
+    write_manifest(write)
     return outputs
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=Path("public"), help="asset directory (default: public)")
+    source_group = parser.add_mutually_exclusive_group()
+    source_group.add_argument(
+        "--source-png",
+        type=Path,
+        default=DEFAULT_SELECTED_SOURCE,
+        help="square PNG to deterministically package (defaults to the selected AI source; requires Pillow)",
+    )
+    source_group.add_argument("--legacy-vector", action="store_true", help="explicitly use the original standard-library vector mark")
     args = parser.parse_args()
-    for path in generate(args.output_dir):
+    if not args.legacy_vector and not args.source_png.is_file():
+        parser.error(f"selected AI source PNG is missing: {args.source_png}; normalize the saved original first")
+    source_png = None if args.legacy_vector else args.source_png
+    for path in generate(args.output_dir, source_png):
         print(path)
 
 

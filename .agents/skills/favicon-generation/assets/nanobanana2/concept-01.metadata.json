@@ -1,0 +1,21 @@
+{
+  "model": "gemini-3.1-flash-image",
+  "prompt": "Create one polished 1:1 square favicon image at 1K resolution. The entire canvas is a perfectly flat, uniform #4392F1 blue tile, edge to edge. Center one original pure-white quail silhouette in right-facing side profile: a compact distinctly round body, a much smaller round head, a short pointed beak, and a tiny crest feather. Include only one very small blue negative-space eye cutout. Use clean bold smooth vector-like contours, broad balanced padding on all sides, and shapes that remain recognizable at 16x16 pixels. It must read as a quail, not a duck, chick, rooster, or generic bird. White is the only mark color. No letters, words, border, gradient, shadow, texture, 3D, detailed wings, feet, claws, or extra objects.",
+  "generatedAt": "2026-10-23T17:07:29.089Z",
+  "aspectRatio": "1:1",
+  "imageSize": "1K",
+  "responseMimeType": "image/jpeg",
+  "detectedMimeType": "image/jpeg",
+  "sourceSha256": "e03415de300381985cb5eabae7ab69df604887796e345dd87688b31aacc0d8db",
+  "width": 1024,
+  "height": 1024,
+  "normalizedSource": {
+    "sourcePath": "concept-01.jpg",
+    "sourceWidth": 1024,
+    "sourceHeight": 1024,
+    "normalizedPng": "concept-01-normalized.png",
+    "normalizedPngSha256": "22ab8d7a5fa33b4e26f907cad16469fa50bd6e2f5c8bd06dd91393fc14158134",
+    "normalizedWidth": 1024,
+    "normalizedHeight": 1024
+  }
+}
